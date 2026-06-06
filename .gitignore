@@ -16,6 +16,8 @@ dist-ssr
 .bash_logout
 .bash_profile
 .bashrc
+.gitconfig
+.git-credentials
 
 # Editor directories and files
 .vscode/*
