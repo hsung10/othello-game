@@ -1,0 +1,42 @@
+:root {
+  --color-page: #f1eadc;
+  --color-page-accent: #d7dfca;
+  --color-text: #172018;
+  --color-text-muted: #637066;
+  --color-panel: rgba(255, 255, 255, 0.78);
+  --color-panel-border: rgba(31, 60, 40, 0.18);
+  --color-board-frame: #173d28;
+  --color-board-line: #153e28;
+  --color-board-cell: #2f8a58;
+  --color-board-cell-hover: #3b9a66;
+  --color-valid-move: #ffe7a0;
+  --color-valid-move-fill: rgba(255, 240, 174, 0.4);
+  --color-accent-dark: #7a4810;
+  --color-button: #173d28;
+  --color-button-hover: #245b3c;
+  --color-button-border: #0c2a1a;
+  --color-button-text: #fffdf7;
+  --color-focus: #ffbd2e;
+
+  --space-1: 0.35rem;
+  --space-2: 0.65rem;
+  --space-3: 1rem;
+  --space-4: 1.35rem;
+  --space-5: 1.8rem;
+  --space-6: 2.5rem;
+
+  --font-size-small: 0.9rem;
+  --font-size-status: clamp(1.05rem, 3vw, 1.25rem);
+  --font-size-score: clamp(1.4rem, 4vw, 2rem);
+
+  --board-max-size: 42rem;
+  --board-border-width: clamp(0.35rem, 1.5vw, 0.65rem);
+  --radius-board: 0.7rem;
+  --radius-panel: 0.8rem;
+
+  --shadow-board: 0 1rem 2.5rem rgba(24, 45, 29, 0.24);
+  --shadow-panel: 0 0.5rem 1.5rem rgba(24, 45, 29, 0.09);
+  --shadow-disc: inset -0.2rem -0.25rem 0.45rem rgba(0, 0, 0, 0.25),
+    0 0.15rem 0.3rem rgba(0, 0, 0, 0.32);
+  --shadow-disc-small: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.28);
+}

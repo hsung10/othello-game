@@ -1,0 +1,33 @@
+.new-game-button {
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  border: 2px solid var(--color-button-border);
+  border-radius: 999px;
+  background: var(--color-button);
+  color: var(--color-button-text);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.new-game-button:hover {
+  background: var(--color-button-hover);
+}
+
+.new-game-button:active {
+  transform: translateY(1px);
+}
+
+.new-game-button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-game-button {
+    transition: none;
+  }
+}

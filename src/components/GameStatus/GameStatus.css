@@ -1,0 +1,21 @@
+.game-status {
+  min-height: 4.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-panel-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-panel);
+  text-align: center;
+  box-shadow: var(--shadow-panel);
+}
+
+.game-status__primary {
+  font-size: var(--font-size-status);
+  font-weight: 800;
+}
+
+.game-status__pass {
+  margin-top: var(--space-1);
+  color: var(--color-accent-dark);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}

@@ -1,0 +1,66 @@
+.board-cell {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-board-line);
+  border-radius: 0;
+  background: var(--color-board-cell);
+  cursor: default;
+}
+
+.board-cell:focus-visible {
+  z-index: 2;
+  outline: 4px solid var(--color-focus);
+  outline-offset: -4px;
+}
+
+.board-cell--valid {
+  cursor: pointer;
+}
+
+.board-cell--valid:hover {
+  background: var(--color-board-cell-hover);
+}
+
+.board-cell__disc {
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: var(--shadow-disc);
+  animation: place-disc 180ms ease-out;
+}
+
+.board-cell__disc--black {
+  border: 2px solid #000;
+  background: radial-gradient(circle at 35% 30%, #4a4a4a, #080808 65%);
+}
+
+.board-cell__disc--white {
+  border: 2px solid #d7d7d7;
+  background: radial-gradient(circle at 35% 30%, #fff, #e2e2e2 70%);
+}
+
+.board-cell__valid-marker {
+  width: 24%;
+  aspect-ratio: 1;
+  border: 2px solid var(--color-valid-move);
+  border-radius: 50%;
+  background: var(--color-valid-move-fill);
+}
+
+@keyframes place-disc {
+  from {
+    transform: scale(0.75);
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-cell__disc {
+    animation: none;
+  }
+}
