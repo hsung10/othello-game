@@ -1,3 +1,4 @@
+import { DifficultySelector } from './components/DifficultySelector/DifficultySelector.jsx';
 import { GameBoard } from './components/GameBoard/GameBoard.jsx';
 import { GameStatus } from './components/GameStatus/GameStatus.jsx';
 import { NewGameButton } from './components/NewGameButton/NewGameButton.jsx';
@@ -13,7 +14,7 @@ function App() {
         <p className="app-header__eyebrow">Classic board game</p>
         <h1>오델로</h1>
         <p className="app-header__description">
-          상대 돌을 사이에 두고 내 돌로 감싸 뒤집으세요.
+          AI는 흑돌, 플레이어는 백돌입니다. 상대 돌을 감싸 뒤집으세요.
         </p>
       </header>
 
@@ -23,6 +24,7 @@ function App() {
             board={game.board}
             validMoves={game.validMoves}
             status={game.status}
+            isInputDisabled={game.isAiThinking}
             onCellSelect={game.placeDisc}
           />
         </div>
@@ -34,6 +36,11 @@ function App() {
             status={game.status}
             winner={game.winner}
             passMessage={game.passMessage}
+            isAiThinking={game.isAiThinking}
+          />
+          <DifficultySelector
+            difficulty={game.difficulty}
+            onChangeDifficulty={game.changeDifficulty}
           />
           <NewGameButton onStartNewGame={game.startNewGame} />
         </aside>

@@ -1,4 +1,11 @@
-import { BLACK, GAME_STATUS, PLACE_DISC, START_NEW_GAME } from './constants.js';
+import {
+  AI_DIFFICULTY,
+  BLACK,
+  CHANGE_DIFFICULTY,
+  GAME_STATUS,
+  PLACE_DISC,
+  START_NEW_GAME,
+} from './constants.js';
 import { createInitialBoard } from './board.js';
 import { applyMove, getOpponent, getValidMoves, isValidMove } from './rules.js';
 
@@ -7,12 +14,15 @@ const PLAYER_LABELS = {
   white: '백돌',
 };
 
-export function createInitialGameState() {
+export function createInitialGameState(
+  difficulty = AI_DIFFICULTY.INTERMEDIATE,
+) {
   return {
     board: createInitialBoard(),
     currentPlayer: BLACK,
     status: GAME_STATUS.PLAYING,
     passMessage: null,
+    difficulty,
   };
 }
 
@@ -29,6 +39,7 @@ function placeDisc(state, row, col) {
 
   if (getValidMoves(nextBoard, opponent).length > 0) {
     return {
+      ...state,
       board: nextBoard,
       currentPlayer: opponent,
       status: GAME_STATUS.PLAYING,
@@ -38,6 +49,7 @@ function placeDisc(state, row, col) {
 
   if (getValidMoves(nextBoard, state.currentPlayer).length > 0) {
     return {
+      ...state,
       board: nextBoard,
       currentPlayer: state.currentPlayer,
       status: GAME_STATUS.PLAYING,
@@ -46,6 +58,7 @@ function placeDisc(state, row, col) {
   }
 
   return {
+    ...state,
     board: nextBoard,
     currentPlayer: state.currentPlayer,
     status: GAME_STATUS.FINISHED,
@@ -59,7 +72,11 @@ export function gameReducer(state, action) {
   }
 
   if (action.type === START_NEW_GAME) {
-    return createInitialGameState();
+    return createInitialGameState(state.difficulty);
+  }
+
+  if (action.type === CHANGE_DIFFICULTY) {
+    return createInitialGameState(action.payload.difficulty);
   }
 
   return state;

@@ -7,6 +7,13 @@ export const DRAW = 'draw';
 
 export const PLACE_DISC = 'PLACE_DISC';
 export const START_NEW_GAME = 'START_NEW_GAME';
+export const CHANGE_DIFFICULTY = 'CHANGE_DIFFICULTY';
+
+export const AI_DIFFICULTY = Object.freeze({
+  BEGINNER: 'beginner',
+  INTERMEDIATE: 'intermediate',
+  ADVANCED: 'advanced',
+});
 
 export const GAME_STATUS = Object.freeze({
   PLAYING: 'playing',

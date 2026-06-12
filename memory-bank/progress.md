@@ -1,12 +1,12 @@
 # 오델로 게임 개발 진행 상황
 
-최종 갱신일: 2026-06-07
+최종 갱신일: 2026-06-12
 
 ## 현재 상태
 
-- 현재 마일스톤: 구현 계획 1~10단계 완료
-- 구현 상태: 첫 번째 버전 기능 및 수용 기준 구현 완료
-- 검증 상태: 자동화 검사와 사용자 수동 검증 완료
+- 현재 마일스톤: 구현 계획 1~10단계 및 AI 대전 확장 완료
+- 구현 상태: 흑돌 AI 대 백돌 사용자와 3단계 난이도 구현 완료
+- 검증 상태: 자동화 검사 완료, 이번 AI 변경의 브라우저 수동 검증은 미실시
 - 다음 작업: 현재 범위 내 필수 작업 없음
 
 ## 완료된 작업
@@ -63,9 +63,19 @@
 - 새 게임 실행 후 초기 상태 복원을 검증했다.
 - 패스 안내, 흑 승리, 백 승리 및 무승부 표시를 컴포넌트 테스트로 검증했다.
 
+### AI 대전 확장
+
+- 흑돌은 브라우저 내 AI가 자동으로 플레이하고 사용자는 백돌만 플레이하도록 변경했다.
+- 초급은 무작위 유효 수, 중급은 위치·포획·상대 기동성 평가, 고급은 깊이 4 알파-베타 탐색을 사용한다.
+- AI 전략은 React와 DOM에 의존하지 않는 `src/game/ai.js` 순수 함수로 구현했다.
+- AI 차례에는 보드 입력을 잠그고 상태 영역에 생각 중 안내를 표시한다.
+- 난이도 선택 UI를 추가했으며 난이도 변경 시 새 게임을 시작하고 새 게임 버튼 사용 시 현재 난이도를 유지한다.
+- Vitest가 작업공간의 `.codex` 도구 테스트를 수집하지 않도록 프로젝트 테스트 범위를 `tests/`로 제한했다.
+
 ## 주요 생성 및 변경 파일
 
 - `src/game/constants.js`
+- `src/game/ai.js`
 - `src/game/board.js`
 - `src/game/rules.js`
 - `src/game/selectors.js`
@@ -77,6 +87,7 @@
 - `src/components/ScoreBoard/`
 - `src/components/GameStatus/`
 - `src/components/NewGameButton/`
+- `src/components/DifficultySelector/`
 - `src/styles/reset.css`
 - `src/styles/tokens.css`
 - `src/styles/global.css`
@@ -84,17 +95,20 @@
 - `tests/game/rules.test.js`
 - `tests/game/selectors.test.js`
 - `tests/game/gameReducer.test.js`
+- `tests/game/ai.test.js`
 - `tests/components/App.test.jsx`
+- `tests/components/BoardCell.test.jsx`
 - `tests/components/GameStatus.test.jsx`
 
 ## 검증 결과
 
 - `npm run lint`: 통과, 오류 및 경고 없음
-- `npm run test`: 테스트 파일 6개, 테스트 54개 모두 통과
+- `npm run test`: 테스트 파일 8개, 테스트 64개 모두 통과
 - `npm run build`: Vite 프로덕션 빌드 성공, 새 경고 없음
-- 이번 구현 파일 대상 Prettier 검사: 통과
-- 개발 서버 `http://127.0.0.1:5173`: `200 OK`
-- 사용자 수동 테스트: 문제 없음으로 확인 완료
+- 이번 AI 구현 파일 대상 Prettier 적용 완료
+- 고급 AI 대 고정 유효 수 전략의 전체 게임 시뮬레이션: 60수에서 정상 종료, 약 0.95초
+- 개발 서버 `http://127.0.0.1:5173`의 `200 OK` 응답을 확인했다.
+- 브라우저 화면에서의 수동 조작과 좁은 화면·넓은 화면 시각 검증은 이번 변경에서 별도로 수행하지 않았다.
 
 ## 알려진 문제 및 정리 항목
 
@@ -103,5 +117,5 @@
 
 ## 남은 작업
 
-현재 `game-design-document.md`와 `implementation-plan.md`에 정의된 첫 번째 버전 범위에는 남은 필수 구현이 없다.
-AI, 온라인 멀티플레이, 저장과 불러오기 등 제외 범위 기능은 추가 요구사항이 생길 때 별도 계획으로 진행한다.
+현재 `game-design-document.md`와 `implementation-plan.md`에 정의된 AI 대전 범위에는 남은 필수 구현이 없다.
+외부 ChatGPT/Codex API 연동, 온라인 멀티플레이, 저장과 불러오기 등 제외 범위 기능은 추가 요구사항이 생길 때 별도 계획으로 진행한다.
