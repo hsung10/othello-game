@@ -6,7 +6,7 @@
 
 - 현재 마일스톤: 구현 계획 1~10단계, AI 대전 확장 및 GitHub Pages 배포 설정 완료
 - 구현 상태: 흑돌 AI 대 백돌 사용자와 3단계 난이도 구현 완료
-- 검증 상태: 자동화 검사 완료, GitHub Actions 실제 배포는 main 브랜치 반영 후 확인 필요
+- 검증 상태: 자동화 검사 및 GitHub Pages 실제 배포 완료
 - 다음 작업: 현재 범위 내 필수 작업 없음
 
 ## 완료된 작업
@@ -115,11 +115,11 @@
 - `npm run build`: Vite 프로덕션 빌드 성공, 새 경고 없음
 - GitHub Pages 설정 변경 후 lint, 테스트 64개 및 production build 재검증 완료
 - `dist/index.html`의 JS와 CSS 경로가 `/othello-game/assets/`를 사용하는 것을 확인했다.
+- `main` 브랜치 push로 GitHub Actions 빌드 및 Pages 배포 작업이 모두 성공했다.
 - 이번 AI 구현 파일 대상 Prettier 적용 완료
 - 고급 AI 대 고정 유효 수 전략의 전체 게임 시뮬레이션: 60수에서 정상 종료, 약 0.95초
 - 개발 서버 `http://127.0.0.1:5173`의 `200 OK` 응답을 확인했다.
 - 브라우저 화면에서의 수동 조작과 좁은 화면·넓은 화면 시각 검증은 이번 변경에서 별도로 수행하지 않았다.
-- GitHub Pages Actions의 실제 배포 결과는 워크플로가 `main` 브랜치에 반영된 후 확인해야 한다.
 
 ## 알려진 문제 및 정리 항목
 
