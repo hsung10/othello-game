@@ -2,7 +2,7 @@
 
 ## 1. 목적
 
-`game-design-document.md`에 정의된 로컬 인간 대 인간 오델로 게임을 웹 브라우저에서 실행할 수 있도록 구현한다.
+`game-design-document.md`에 정의된 인간 대 AI 오델로 게임을 웹 브라우저에서 실행할 수 있도록 구현한다.
 개발은 `AGENTS.md`의 기술 스택과 구조 규칙을 따른다.
 
 핵심 목표는 다음과 같다.
@@ -11,7 +11,7 @@
 - 게임 규칙과 React UI를 분리한다.
 - 마우스와 키보드로 사용할 수 있는 반응형 UI를 제공한다.
 - 핵심 규칙과 사용자 흐름을 자동화 테스트로 검증한다.
-- 향후 AI 플레이어를 추가할 수 있는 구조를 유지한다.
+- 난이도별 AI 전략을 게임 규칙 및 UI와 분리한다.
 
 ## 2. 구현 범위
 
@@ -29,10 +29,14 @@
 - 새 게임 시작
 - 반응형 화면과 키보드 접근성
 - 게임 규칙 단위 테스트와 React 컴포넌트 테스트
+- 흑돌 AI와 백돌 사용자 대전
+- 초급, 중급, 고급 AI 난이도
+- AI 자동 착수와 AI 턴 사용자 입력 차단
 
 ### 2.2 제외
 
-- AI 플레이어
+- 외부 ChatGPT 또는 Codex API 연동
+- 로컬 인간 대 인간 모드
 - 온라인 멀티플레이
 - 사용자 계정, 전적 및 랭킹
 - 제한 시간
@@ -116,10 +120,10 @@ game rules -X-> React 또는 DOM
 ### 5.1 기본 도메인 값
 
 ```js
-BOARD_SIZE = 8
-EMPTY = null
-BLACK = "black"
-WHITE = "white"
+BOARD_SIZE = 8;
+EMPTY = null;
+BLACK = 'black';
+WHITE = 'white';
 ```
 
 - 좌표는 0부터 시작하는 `{ row, col }` 객체를 사용한다.
@@ -132,10 +136,7 @@ reducer가 관리할 최소 상태는 다음과 같다.
 
 ```js
 {
-  board,
-  currentPlayer,
-  status,
-  passMessage
+  board, currentPlayer, status, passMessage, difficulty;
 }
 ```
 
@@ -149,6 +150,7 @@ reducer가 관리할 최소 상태는 다음과 같다.
 ```js
 { type: "PLACE_DISC", payload: { row, col } }
 { type: "START_NEW_GAME" }
+{ type: "CHANGE_DIFFICULTY", payload: { difficulty } }
 ```
 
 `PLACE_DISC`는 다음 작업을 하나의 상태 전이로 처리한다.
@@ -160,6 +162,51 @@ reducer가 관리할 최소 상태는 다음과 같다.
 5. 상대가 둘 수 있으면 상대 턴으로 변경한다.
 6. 상대가 둘 수 없고 현재 플레이어는 둘 수 있으면 자동 패스 처리한다.
 7. 양쪽 모두 둘 수 없으면 게임을 종료한다.
+
+`CHANGE_DIFFICULTY`는 난이도를 저장하고 표준 초기 상태로 새 게임을 시작한다.
+
+### 5.4 AI 대전 확장 계획
+
+#### 작업
+
+- AI 난이도 상수와 표시 이름을 정의한다.
+- `chooseAiMove(board, player, difficulty, random)` 순수 함수를 구현한다.
+- 초급은 주입 가능한 난수 함수를 사용해 유효 수 중 하나를 선택한다.
+- 중급은 위치 가중치, 즉시 포획 수 및 상대 기동성을 조합해 평가한다.
+- 고급은 알파-베타 가지치기를 적용한 제한 깊이 minimax 탐색을 수행한다.
+- 게임 종료 노드는 실제 승패와 돌 차이를 일반 위치 평가보다 크게 반영한다.
+- AI가 흑돌 차례일 때 Hook의 effect가 짧은 지연 후 기존 `placeDisc` 상태 전이를 호출한다.
+- AI 차례와 게임 종료 상태에는 사용자 보드 입력을 비활성화한다.
+- 난이도 선택 컴포넌트를 추가하고 변경 시 새 게임을 시작한다.
+
+#### 대상 파일
+
+- `src/game/constants.js`
+- `src/game/ai.js`
+- `src/game/gameReducer.js`
+- `src/hooks/useOthelloGame.js`
+- `src/components/DifficultySelector/`
+- `src/App.jsx`
+- `tests/game/ai.test.js`
+- `tests/components/App.test.jsx`
+
+#### 테스트
+
+- 모든 난이도가 유효한 착수만 반환한다.
+- 유효한 수가 없으면 `null`을 반환한다.
+- 초급 난수 주입으로 후보 선택을 제어할 수 있다.
+- 중급이 가능한 경우 모서리를 선택하고 위험한 모서리 인접 칸을 피한다.
+- 고급이 종료 승리 수와 상대 기동성을 탐색에 반영한다.
+- 첫 화면에서 AI가 흑돌로 자동 착수하고 사용자 백돌 차례로 전환된다.
+- AI 턴에는 보드 버튼이 비활성화된다.
+- 난이도 변경 시 표준 보드에서 선택한 AI가 새로 시작한다.
+- 새 게임은 현재 난이도를 유지한다.
+
+#### 완료 조건
+
+- 외부 서비스 없이 세 난이도 AI가 브라우저에서 동작한다.
+- AI와 사용자의 착수가 같은 reducer 규칙을 사용한다.
+- `npm run lint`, `npm run test`, `npm run build`가 모두 통과한다.
 
 ## 6. 단계별 구현 계획
 
@@ -325,14 +372,14 @@ reducer가 관리할 최소 상태는 다음과 같다.
 ```js
 {
   board,
-  currentPlayer,
-  status,
-  scores,
-  validMoves,
-  winner,
-  passMessage,
-  placeDisc,
-  startNewGame
+    currentPlayer,
+    status,
+    scores,
+    validMoves,
+    winner,
+    passMessage,
+    placeDisc,
+    startNewGame;
 }
 ```
 
@@ -479,19 +526,22 @@ npm run build
 
 ## 7. 수용 기준 추적표
 
-| 기획서 수용 기준 | 구현 위치 | 검증 위치 |
-| --- | --- | --- |
-| 표준 초기 배치와 흑 선공 | `board.js`, `gameReducer.js` | `board.test.js`, `gameReducer.test.js` |
-| 초기 점수 2 대 2 | `selectors.js` | `selectors.test.js`, `App.test.jsx` |
-| 유효한 착수 위치 표시 | `rules.js`, `GameBoard.jsx` | `rules.test.js`, `App.test.jsx` |
-| 유효하지 않은 착수 거부 | `rules.js`, `gameReducer.js` | `rules.test.js`, `gameReducer.test.js` |
-| 8방향의 모든 포획 돌 뒤집기 | `rules.js` | `rules.test.js` |
-| 착수 후 점수와 차례 갱신 | `gameReducer.js`, `selectors.js` | `gameReducer.test.js`, `App.test.jsx` |
-| 자동 패스와 안내 | `gameReducer.js`, `GameStatus.jsx` | `gameReducer.test.js`, `App.test.jsx` |
-| 연속 패스 또는 보드가 가득 차면 종료 | `selectors.js`, `gameReducer.js` | `selectors.test.js`, `gameReducer.test.js` |
-| 승자 또는 무승부 표시 | `selectors.js`, `GameStatus.jsx` | `selectors.test.js`, `App.test.jsx` |
-| 종료 후 착수 차단 | `gameReducer.js`, `BoardCell.jsx` | `gameReducer.test.js`, `App.test.jsx` |
-| 새 게임 상태 초기화 | `gameReducer.js`, `NewGameButton.jsx` | `gameReducer.test.js`, `App.test.jsx` |
+| 기획서 수용 기준                     | 구현 위치                             | 검증 위치                                  |
+| ------------------------------------ | ------------------------------------- | ------------------------------------------ |
+| 표준 초기 배치와 흑 선공             | `board.js`, `gameReducer.js`          | `board.test.js`, `gameReducer.test.js`     |
+| 초기 점수 2 대 2                     | `selectors.js`                        | `selectors.test.js`, `App.test.jsx`        |
+| 유효한 착수 위치 표시                | `rules.js`, `GameBoard.jsx`           | `rules.test.js`, `App.test.jsx`            |
+| 유효하지 않은 착수 거부              | `rules.js`, `gameReducer.js`          | `rules.test.js`, `gameReducer.test.js`     |
+| 8방향의 모든 포획 돌 뒤집기          | `rules.js`                            | `rules.test.js`                            |
+| 착수 후 점수와 차례 갱신             | `gameReducer.js`, `selectors.js`      | `gameReducer.test.js`, `App.test.jsx`      |
+| 자동 패스와 안내                     | `gameReducer.js`, `GameStatus.jsx`    | `gameReducer.test.js`, `App.test.jsx`      |
+| 연속 패스 또는 보드가 가득 차면 종료 | `selectors.js`, `gameReducer.js`      | `selectors.test.js`, `gameReducer.test.js` |
+| 승자 또는 무승부 표시                | `selectors.js`, `GameStatus.jsx`      | `selectors.test.js`, `App.test.jsx`        |
+| 종료 후 착수 차단                    | `gameReducer.js`, `BoardCell.jsx`     | `gameReducer.test.js`, `App.test.jsx`      |
+| 새 게임 상태 초기화                  | `gameReducer.js`, `NewGameButton.jsx` | `gameReducer.test.js`, `App.test.jsx`      |
+| AI 흑돌 자동 선공과 사용자 입력 차단 | `ai.js`, `useOthelloGame.js`          | `ai.test.js`, `App.test.jsx`               |
+| 초급, 중급, 고급 난이도              | `ai.js`, `DifficultySelector.jsx`     | `ai.test.js`, `App.test.jsx`               |
+| 난이도 변경과 새 게임 시 선택 유지   | `gameReducer.js`                      | `gameReducer.test.js`, `App.test.jsx`      |
 
 ## 8. 구현 순서와 의존성
 

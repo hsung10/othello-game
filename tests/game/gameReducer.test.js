@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  AI_DIFFICULTY,
   BLACK,
+  CHANGE_DIFFICULTY,
   EMPTY,
   GAME_STATUS,
   PLACE_DISC,
@@ -31,6 +33,7 @@ describe('gameReducer', () => {
     expect(state.currentPlayer).toBe(BLACK);
     expect(state.status).toBe(GAME_STATUS.PLAYING);
     expect(state.passMessage).toBeNull();
+    expect(state.difficulty).toBe(AI_DIFFICULTY.INTERMEDIATE);
   });
 
   it('places and flips a disc before changing turns', () => {
@@ -111,11 +114,24 @@ describe('gameReducer', () => {
       currentPlayer: WHITE,
       status: GAME_STATUS.FINISHED,
       passMessage: '패스',
+      difficulty: AI_DIFFICULTY.ADVANCED,
     };
 
     const nextState = gameReducer(state, { type: START_NEW_GAME });
 
-    expect(nextState).toEqual(createInitialGameState());
+    expect(nextState).toEqual(createInitialGameState(AI_DIFFICULTY.ADVANCED));
+    expect(nextState.difficulty).toBe(AI_DIFFICULTY.ADVANCED);
+    expect(nextState.board).not.toBe(state.board);
+  });
+
+  it('changes difficulty and starts a fresh game', () => {
+    const state = createInitialGameState();
+    const nextState = gameReducer(state, {
+      type: CHANGE_DIFFICULTY,
+      payload: { difficulty: AI_DIFFICULTY.BEGINNER },
+    });
+
+    expect(nextState).toEqual(createInitialGameState(AI_DIFFICULTY.BEGINNER));
     expect(nextState.board).not.toBe(state.board);
   });
 });

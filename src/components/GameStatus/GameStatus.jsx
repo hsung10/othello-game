@@ -14,11 +14,22 @@ function getResultMessage(winner) {
   return `게임 종료: ${PLAYER_LABELS[winner]} 승리입니다.`;
 }
 
-export function GameStatus({ currentPlayer, status, winner, passMessage }) {
-  const statusMessage =
-    status === GAME_STATUS.FINISHED
-      ? getResultMessage(winner)
-      : `현재 차례: ${PLAYER_LABELS[currentPlayer]}`;
+export function GameStatus({
+  currentPlayer,
+  status,
+  winner,
+  passMessage,
+  isAiThinking = false,
+}) {
+  let statusMessage = '내 차례: 백돌';
+
+  if (status === GAME_STATUS.FINISHED) {
+    statusMessage = getResultMessage(winner);
+  } else if (isAiThinking) {
+    statusMessage = 'AI(흑돌)가 생각 중입니다...';
+  } else if (currentPlayer !== WHITE) {
+    statusMessage = `현재 차례: ${PLAYER_LABELS[currentPlayer]}`;
+  }
 
   return (
     <section className="game-status" aria-live="polite" aria-atomic="true">

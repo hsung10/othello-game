@@ -7,7 +7,7 @@ const DISC_LABELS = {
   [EMPTY]: '빈칸',
 };
 
-export function BoardCell({ row, col, value, isValid, isGameOver, onSelect }) {
+export function BoardCell({ row, col, value, isValid, isDisabled, onSelect }) {
   const position = `${row + 1}행 ${col + 1}열`;
   const moveLabel = isValid ? ', 착수 가능' : '';
   const accessibleName = `${position}, ${DISC_LABELS[value]}${moveLabel}`;
@@ -21,7 +21,7 @@ export function BoardCell({ row, col, value, isValid, isGameOver, onSelect }) {
       className={`board-cell${isValid ? ' board-cell--valid' : ''}`}
       type="button"
       aria-label={accessibleName}
-      disabled={!isValid || isGameOver}
+      disabled={!isValid || isDisabled}
       onClick={handleClick}
     >
       {value !== EMPTY && (

@@ -6,7 +6,13 @@ import {
 import { BoardCell } from '../BoardCell/BoardCell.jsx';
 import './GameBoard.css';
 
-export function GameBoard({ board, validMoves, status, onCellSelect }) {
+export function GameBoard({
+  board,
+  validMoves,
+  status,
+  isInputDisabled,
+  onCellSelect,
+}) {
   const validMoveKeys = createValidMoveKeySet(validMoves);
   const isGameOver = status === GAME_STATUS.FINISHED;
 
@@ -17,6 +23,7 @@ export function GameBoard({ board, validMoves, status, onCellSelect }) {
       aria-label="오델로 게임 보드"
       aria-rowcount="8"
       aria-colcount="8"
+      aria-busy={isInputDisabled}
     >
       {board.map((boardRow, row) =>
         boardRow.map((value, col) => {
@@ -29,7 +36,7 @@ export function GameBoard({ board, validMoves, status, onCellSelect }) {
               col={col}
               value={value}
               isValid={validMoveKeys.has(coordinateKey)}
-              isGameOver={isGameOver}
+              isDisabled={isGameOver || isInputDisabled}
               onSelect={onCellSelect}
             />
           );

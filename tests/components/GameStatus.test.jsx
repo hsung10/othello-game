@@ -5,6 +5,20 @@ import { GameStatus } from '../../src/components/GameStatus/GameStatus.jsx';
 import { BLACK, DRAW, GAME_STATUS, WHITE } from '../../src/game/constants.js';
 
 describe('GameStatus', () => {
+  it('announces when the AI is thinking', () => {
+    render(
+      <GameStatus
+        currentPlayer={BLACK}
+        status={GAME_STATUS.PLAYING}
+        winner={null}
+        passMessage={null}
+        isAiThinking
+      />,
+    );
+
+    expect(screen.getByText(/AI\(흑돌\).*생각 중/)).toBeInTheDocument();
+  });
+
   it('announces the current turn and pass message', () => {
     render(
       <GameStatus
