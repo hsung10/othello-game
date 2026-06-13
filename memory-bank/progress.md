@@ -1,12 +1,12 @@
 # 오델로 게임 개발 진행 상황
 
-최종 갱신일: 2026-06-12
+최종 갱신일: 2026-06-13
 
 ## 현재 상태
 
-- 현재 마일스톤: 구현 계획 1~10단계 및 AI 대전 확장 완료
+- 현재 마일스톤: 구현 계획 1~10단계, AI 대전 확장 및 GitHub Pages 배포 설정 완료
 - 구현 상태: 흑돌 AI 대 백돌 사용자와 3단계 난이도 구현 완료
-- 검증 상태: 자동화 검사 완료, 이번 AI 변경의 브라우저 수동 검증은 미실시
+- 검증 상태: 자동화 검사 완료, GitHub Actions 실제 배포는 main 브랜치 반영 후 확인 필요
 - 다음 작업: 현재 범위 내 필수 작업 없음
 
 ## 완료된 작업
@@ -72,6 +72,12 @@
 - 난이도 선택 UI를 추가했으며 난이도 변경 시 새 게임을 시작하고 새 게임 버튼 사용 시 현재 난이도를 유지한다.
 - Vitest가 작업공간의 `.codex` 도구 테스트를 수집하지 않도록 프로젝트 테스트 범위를 `tests/`로 제한했다.
 
+### GitHub Pages 배포
+
+- Vite 빌드 자산 경로를 GitHub Pages 저장소 경로인 `/othello-game/`로 설정했다.
+- `main` 브랜치 push 시 `npm ci`와 `npm run build`를 실행하고 `dist`를 GitHub Pages에 배포하는 Actions 워크플로를 추가했다.
+- 필요할 때 Actions 화면에서 수동 실행할 수 있도록 `workflow_dispatch`도 활성화했다.
+
 ## 주요 생성 및 변경 파일
 
 - `src/game/constants.js`
@@ -91,6 +97,8 @@
 - `src/styles/reset.css`
 - `src/styles/tokens.css`
 - `src/styles/global.css`
+- `.github/workflows/deploy.yml`
+- `vite.config.js`
 - `tests/game/board.test.js`
 - `tests/game/rules.test.js`
 - `tests/game/selectors.test.js`
@@ -105,10 +113,13 @@
 - `npm run lint`: 통과, 오류 및 경고 없음
 - `npm run test`: 테스트 파일 8개, 테스트 64개 모두 통과
 - `npm run build`: Vite 프로덕션 빌드 성공, 새 경고 없음
+- GitHub Pages 설정 변경 후 lint, 테스트 64개 및 production build 재검증 완료
+- `dist/index.html`의 JS와 CSS 경로가 `/othello-game/assets/`를 사용하는 것을 확인했다.
 - 이번 AI 구현 파일 대상 Prettier 적용 완료
 - 고급 AI 대 고정 유효 수 전략의 전체 게임 시뮬레이션: 60수에서 정상 종료, 약 0.95초
 - 개발 서버 `http://127.0.0.1:5173`의 `200 OK` 응답을 확인했다.
 - 브라우저 화면에서의 수동 조작과 좁은 화면·넓은 화면 시각 검증은 이번 변경에서 별도로 수행하지 않았다.
+- GitHub Pages Actions의 실제 배포 결과는 워크플로가 `main` 브랜치에 반영된 후 확인해야 한다.
 
 ## 알려진 문제 및 정리 항목
 
